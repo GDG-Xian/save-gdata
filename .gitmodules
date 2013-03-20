@@ -1,0 +1,3 @@
+[submodule "google-reader/export_gr2evernote"]
+	path = google-reader/export_gr2evernote
+	url = git://github.com/kerchen/export_gr2evernote.git
