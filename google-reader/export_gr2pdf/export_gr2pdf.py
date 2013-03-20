@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import codecs, json, sys
-import logging
+import codecs, json, sys, logging 
+import xhtml2pdf, xhtml2pdf.pisa
+import cStringIO
+
 FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
 logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
-def export_html(filename):
-    logging.info('* Loading source: %s', filename)
-    src_file = codecs.open(filename, 'r', encoding='utf-8')
-    tmp_file = codecs.open(TMP_FILE, 'w', encoding='utf-8')
+def export_pdf(source_file, target_file):
+    logging.info('* Loading source: %s', source_file)
+    src_file = codecs.open(source_file, 'r', encoding='utf-8')
+    tmp_file = cStringIO.StringIO()
     data = json.load(src_file, encoding='utf-8')
     count = len(data['items'])
       
@@ -26,6 +28,18 @@ def export_html(filename):
     tmp_file.close()
     src_file.close()
 
+    logging.info('Converting to pdf: %s', target_file)
+    out_file = codecs.open(target_file, 'wb', encoding='utf-8')
+
+    pdf = xhtml2pdf.pisa.CreatePDF(tmp_file, out_file, encoding='utf-8')
+    if not pdf.err:
+        logging.info('PDF successfull created.')
+    else:
+        logging.error(pdf.err)
+    
+    out_file.close()
+
+
 if __name__ == '__main__':
     TMP_FILE = 'temp.html'
     SYS_ENCODING = sys.getdefaultencoding()
@@ -36,5 +50,5 @@ if __name__ == '__main__':
     parser.add_argument('-o', dest='target', required=True, help='PDF file to export. export.pdf')
     args = parser.parse_args()
 
-    export_html(args.source)
+    export_pdf(args.source, args.target)
 
