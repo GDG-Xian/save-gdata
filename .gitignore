@@ -1,6 +1,9 @@
 *.py[cod]
 *.html
 *.pdf
+*.json
+*.ttf
+*.ttc
 
 # C extensions
 *.so
