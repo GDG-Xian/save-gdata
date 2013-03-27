@@ -1,2 +1,19 @@
-@font-face { font-family: "code2000"; src: url("fzxbsjt.ttf1") }
-html { font-family: "code2000"; }
+@font-face { font-family: code2000; src: url(code2000.ttf); }
+
+body{
+    font-family: code2000;
+}
+
+@page {
+    margin: 1cm;
+    margin-bottom: 2.5cm;
+    font-family: code2000;
+    @frame footer {
+        -pdf-frame-content: footerContent;
+        bottom: 2cm;
+        margin-left: 1cm;
+        margin-right: 1cm;
+        height: 1cm;
+        font-family: code2000;
+    }
+}

@@ -8,7 +8,7 @@ FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
 logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 def export_pdf(source_file, target_file):
-    logging.info('* Loading source: %s', source_file)
+    logging.info('Loading source: %s', source_file)
     src_file = codecs.open(source_file, 'r', encoding='utf-8')
     tmp_file = codecs.open(TMP_FILE, 'w', encoding='utf-8')
     data = json.load(src_file, encoding='utf-8')
@@ -21,7 +21,6 @@ def export_pdf(source_file, target_file):
     <html>
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <link type="text/css" rel="stylesheet" href="style.css" />
         </head>
         <body>''')
     tmp_file.write('<h1 style="text-align:center;">%s</h1>\n' % data['title'])
@@ -40,11 +39,12 @@ def export_pdf(source_file, target_file):
 
     logging.info('Converting to pdf: %s', target_file)
     out_file = codecs.open(target_file, 'wb')
-    tmp_file = codecs.open(TMP_FILE, 'r')
+    tmp_file = codecs.open(TMP_FILE, 'rb')
+    css_text = codecs.open(CSS_FILE, 'r').read()
 
     pdf = xhtml2pdf.pisa.CreatePDF(tmp_file, out_file, encoding='UTF-8', 
-                                                       link_callback=True,
-                                                       default_css=codecs.open('style.css', 'r', encoding='UTF-8').read().encode('UTF-8'))
+                                                       link_callback=False,
+                                                       default_css=css_text)
     if not pdf.err:
         logging.info('PDF successfull created.')
     else:
@@ -56,6 +56,7 @@ def export_pdf(source_file, target_file):
 if __name__ == '__main__':
     TMP_FILE = 'temp.html'
     SYS_ENCODING = sys.getdefaultencoding()
+    CSS_FILE = 'style.css'
 
     import argparse
     parser = argparse.ArgumentParser(description='Export google reader to pdf.')
